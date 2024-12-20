@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
-@EnableMongoRepositories(basePackages = "com.nexts.gs.repository", mongoTemplateRef = TigerDbConfiguration.MONGO_TEMPLATE)
+@EnableMongoRepositories(basePackages = "com.nexts.gs.repository.tiger", mongoTemplateRef = TigerDbConfiguration.MONGO_TEMPLATE)
 public class TigerDbConfiguration {
   protected static final String MONGO_TEMPLATE = "tigerMongoTemplate";
 

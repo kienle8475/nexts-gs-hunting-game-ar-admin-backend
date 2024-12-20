@@ -19,6 +19,7 @@ public class MongoConfiguration {
   @Value("${spring.data.mongodb.heineken.uri}")
   private String heinekenDatabaseUri;
 
+  @Primary
   @Bean(name = "heinekenMongoClient")
   public MongoClient heinekenMongoClient() {
     return MongoClients.create(heinekenDatabaseUri);

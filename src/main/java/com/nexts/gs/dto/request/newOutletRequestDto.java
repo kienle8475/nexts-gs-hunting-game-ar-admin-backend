@@ -5,7 +5,7 @@ import com.nexts.gs.enums.BoothTypeEnum;
 import lombok.Data;
 
 @Data
-public class newOutletRequest {
+public class newOutletRequestDto {
   private String name;
   private String address;
   private String provinceId;

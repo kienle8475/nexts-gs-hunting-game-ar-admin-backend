@@ -6,13 +6,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.nexts.gs.dto.request.newOutletRequest;
-import com.nexts.gs.dto.response.OutletResponse;
+import com.nexts.gs.dto.request.newOutletRequestDto;
+import com.nexts.gs.dto.response.OutletResponseDto;
 import com.nexts.gs.enums.BoothTypeEnum;
+import com.nexts.gs.mapper.OutletMapper;
 import com.nexts.gs.model.Outlet;
 import com.nexts.gs.model.Province;
-import com.nexts.gs.repository.HeinekenOutletRepository;
-import com.nexts.gs.repository.TigerOutletRepository;
+import com.nexts.gs.repository.heineken.HeinekenOutletRepository;
+import com.nexts.gs.repository.tiger.TigerOutletRepository;
 
 @Service
 public class OutletService {
@@ -20,32 +21,34 @@ public class OutletService {
   private final TigerOutletRepository tigerOutletRepository;
   private final ProvinceService provinceService;
 
+  private final OutletMapper outletMapper;
+
   public OutletService(@Qualifier("heinekenOutletRepository") HeinekenOutletRepository heinekenOutletRepository,
       @Qualifier("tigerOutletRepository") TigerOutletRepository tigerOutletRepository,
-      @Qualifier("provinceService") ProvinceService provinceService) {
+      @Qualifier("provinceService") ProvinceService provinceService,
+      OutletMapper outletMapper) {
     this.heinekenOutletRepository = heinekenOutletRepository;
     this.tigerOutletRepository = tigerOutletRepository;
     this.provinceService = provinceService;
+    this.outletMapper = outletMapper;
   }
 
-  public List<OutletResponse> getAllOutlets() {
-    List<OutletResponse> combinedOutlets = new ArrayList<>();
+  public List<OutletResponseDto> getAllOutlets() {
+    List<OutletResponseDto> combinedOutlets = new ArrayList<>();
     heinekenOutletRepository.findAll().forEach((Outlet outlet) -> {
-      OutletResponse outletResponse = new OutletResponse(outlet);
-      outletResponse.setOutletType(BoothTypeEnum.HEINEKEN);
+      OutletResponseDto outletResponse = outletMapper.toResponseDto(outlet, BoothTypeEnum.HEINEKEN);
       combinedOutlets.add(outletResponse);
     });
 
     tigerOutletRepository.findAll().forEach((Outlet outlet) -> {
-      OutletResponse outletResponse = new OutletResponse(outlet);
-      outletResponse.setOutletType(BoothTypeEnum.TIGER);
+      OutletResponseDto outletResponse = outletMapper.toResponseDto(outlet, BoothTypeEnum.TIGER);
       combinedOutlets.add(outletResponse);
     });
 
     return combinedOutlets;
   }
 
-  public Outlet addNewOutlet(newOutletRequest newOutletRequest) {
+  public Outlet addNewOutlet(newOutletRequestDto newOutletRequest) {
     Outlet outlet = new Outlet();
     Province province = provinceService.findProvinceById(newOutletRequest.getProvinceId());
     outlet.setName(newOutletRequest.getName());

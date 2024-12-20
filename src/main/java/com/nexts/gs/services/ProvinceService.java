@@ -7,10 +7,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.nexts.gs.dto.request.newProvinceRequest;
+import com.nexts.gs.dto.request.newProvinceRequestDto;
 import com.nexts.gs.model.Province;
-import com.nexts.gs.repository.HeinekenProvinceRepository;
-import com.nexts.gs.repository.TigerProvinceRepository;
+import com.nexts.gs.repository.heineken.HeinekenProvinceRepository;
+import com.nexts.gs.repository.tiger.TigerProvinceRepository;
 
 @Service
 public class ProvinceService {
@@ -35,7 +35,7 @@ public class ProvinceService {
     return province.orElseThrow(() -> new RuntimeException("Province not found with id: " + id));
   }
 
-  public Province addNewProvince(newProvinceRequest newProvince) {
+  public Province addNewProvince(newProvinceRequestDto newProvince) {
     Province province = new Province();
     province.setName(newProvince.getName());
     Province db1Province = heinekenProvinceRepository.save(province);

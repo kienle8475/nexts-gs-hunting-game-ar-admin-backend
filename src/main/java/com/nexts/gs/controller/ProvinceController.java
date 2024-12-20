@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nexts.gs.dto.request.newProvinceRequest;
+import com.nexts.gs.dto.request.newProvinceRequestDto;
 import com.nexts.gs.model.Province;
 import com.nexts.gs.services.ProvinceService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +29,7 @@ public class ProvinceController {
   }
 
   @PostMapping("/add")
-  public ResponseEntity<?> addNewProvince(@RequestBody newProvinceRequest newProvince) {
+  public ResponseEntity<?> addNewProvince(@RequestBody newProvinceRequestDto newProvince) {
     provinceService.addNewProvince(newProvince);
     return ResponseEntity.status(HttpStatus.CREATED).body("Successful!");
   }

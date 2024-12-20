@@ -57,4 +57,8 @@ public class GameSession {
 
   private List<Collected> collected = new ArrayList<>();
 
+  @DocumentReference
+  @Field("reward_gift")
+  private Gift rewardGift;
+
 }

@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
-@EnableMongoRepositories(basePackages = "com.nexts.gs.repository", mongoTemplateRef = HeinekenDbConfiguration.MONGO_TEMPLATE)
+@EnableMongoRepositories(basePackages = "com.nexts.gs.repository.heineken", mongoTemplateRef = HeinekenDbConfiguration.MONGO_TEMPLATE)
 public class HeinekenDbConfiguration {
   protected static final String MONGO_TEMPLATE = "heinekenMongoTemplate";
 

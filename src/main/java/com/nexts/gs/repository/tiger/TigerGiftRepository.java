@@ -1,4 +1,4 @@
-package com.nexts.gs.repository;
+package com.nexts.gs.repository.tiger;
 
 public class TigerGiftRepository {
 
