@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.nexts.gs.dto.request.newOutletRequestDto;
-import com.nexts.gs.dto.response.OutletResponseDto;
 import com.nexts.gs.enums.BoothTypeEnum;
 import com.nexts.gs.mapper.OutletMapper;
 import com.nexts.gs.model.Outlet;
@@ -21,30 +21,28 @@ public class OutletService {
   private final TigerOutletRepository tigerOutletRepository;
   private final ProvinceService provinceService;
 
-  private final OutletMapper outletMapper;
-
   public OutletService(@Qualifier("heinekenOutletRepository") HeinekenOutletRepository heinekenOutletRepository,
       @Qualifier("tigerOutletRepository") TigerOutletRepository tigerOutletRepository,
-      @Qualifier("provinceService") ProvinceService provinceService,
-      OutletMapper outletMapper) {
+      @Qualifier("provinceService") ProvinceService provinceService) {
     this.heinekenOutletRepository = heinekenOutletRepository;
     this.tigerOutletRepository = tigerOutletRepository;
     this.provinceService = provinceService;
-    this.outletMapper = outletMapper;
   }
 
-  public List<OutletResponseDto> getAllOutlets() {
-    List<OutletResponseDto> combinedOutlets = new ArrayList<>();
-    heinekenOutletRepository.findAll().forEach((Outlet outlet) -> {
-      OutletResponseDto outletResponse = outletMapper.toResponseDto(outlet, BoothTypeEnum.HEINEKEN);
-      combinedOutlets.add(outletResponse);
-    });
-
-    tigerOutletRepository.findAll().forEach((Outlet outlet) -> {
-      OutletResponseDto outletResponse = outletMapper.toResponseDto(outlet, BoothTypeEnum.TIGER);
-      combinedOutlets.add(outletResponse);
-    });
-
+  @Cacheable(value = "outlets")
+  public List<Outlet> getAllOutlets(BoothTypeEnum boothType) {
+    List<Outlet> combinedOutlets = new ArrayList<>();
+    switch (boothType) {
+      case HEINEKEN:
+        combinedOutlets.addAll(heinekenOutletRepository.findAll());
+        break;
+      case TIGER:
+        combinedOutlets.addAll(tigerOutletRepository.findAll());
+        break;
+      default:
+        combinedOutlets.addAll(tigerOutletRepository.findAll());
+        break;
+    }
     return combinedOutlets;
   }
 
@@ -53,7 +51,7 @@ public class OutletService {
     Province province = provinceService.findProvinceById(newOutletRequest.getProvinceId());
     outlet.setName(newOutletRequest.getName());
     outlet.setAddress(newOutletRequest.getAddress());
-    outlet.setProvince(province);
+    outlet.setProvince(province.getId());
     switch (newOutletRequest.getBoothType()) {
       case HEINEKEN:
         return heinekenOutletRepository.save(outlet);

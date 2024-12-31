@@ -11,8 +11,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import com.nexts.gs.enums.BoothTypeEnum;
 
 @Document(collection = "outlets")
 @Data
@@ -27,8 +28,9 @@ public class Outlet {
 
   private String address;
 
-  @DocumentReference
-  private Province province;
+  private Location gps;
+
+  private String province;
 
   @Field("created_utc")
   @CreatedDate
@@ -37,4 +39,8 @@ public class Outlet {
   @Field("updated_utc")
   @LastModifiedDate
   private Instant updatedUtc;
+
+  @Field("outlet_type")
+  private BoothTypeEnum boothType;
+
 }

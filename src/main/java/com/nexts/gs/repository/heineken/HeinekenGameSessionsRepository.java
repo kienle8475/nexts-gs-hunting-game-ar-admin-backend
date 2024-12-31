@@ -14,9 +14,14 @@ import com.nexts.gs.model.GameSession;
 public interface HeinekenGameSessionsRepository
     extends MongoRepository<GameSession, String> {
 
-  @Query("{ '$and': [ " +
-      "  { '$or': [ { 'created_utc': { '$gte': ?0, '$lte': ?1 } }, { } ] }, " +
-      "  { '$or': [ { 'outlet.id': ?2 }, { } ] } " +
-      "] }")
-  Page<GameSession> findGameSessionsWithFilters(Instant startDate, Instant endDate, String outletId, Pageable pageable);
+  @Query("{ 'outlet.id': ?0}")
+  Page<GameSession> findGameSessionsByOutlet(String outletId, Pageable pageable);
+
+  @Query("{ 'created_utc': { '$gte': ?0, '$lte': ?1 } }")
+  Page<GameSession> findGameSessionsByDateRange(Instant startDate, Instant enđate, Pageable pageable);
+
+  @Query("{'$and': [ { 'created_utc': { '$gte': ?0, '$lte': ?1 } }, { 'outlet.id': ?2 } ]}")
+  Page<GameSession> findGameSessionsByOutetAndDateRange(Instant startDate, Instant enđate, String outletId,
+      Pageable pageable);
+
 }

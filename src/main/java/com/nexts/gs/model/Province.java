@@ -7,13 +7,10 @@ import java.util.List;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Province {
+
   @Id
   private String id;
 
@@ -38,8 +36,6 @@ public class Province {
   @LastModifiedDate
   private Instant updatedUtc;
 
-  @JsonBackReference
-  @ReadOnlyProperty
   @DocumentReference(lookup = "{'province':?#{#self._id} }")
   private List<Outlet> outlets = new ArrayList<>();
 }

@@ -1,5 +1,5 @@
 package com.nexts.gs.enums;
 
 public enum PackTypeEnum {
-  PACK_6, CASE
+  CAN, PACK, PACK_6, CASE
 }

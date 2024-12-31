@@ -1,7 +1,8 @@
 package com.nexts.gs.controller;
 
 import java.time.Instant;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,43 +11,40 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nexts.gs.dto.GameSessionDto;
+import com.nexts.gs.enums.BoothTypeEnum;
 import com.nexts.gs.model.GameSession;
 import com.nexts.gs.services.GameSessionsService;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping("/report/game")
+@CrossOrigin
+@RequestMapping("/api/report/game")
 public class GameReportController {
   @Autowired
   private GameSessionsService gameSessionsService;
 
   @GetMapping("/list")
-  public List<GameSessionDto> getGameReport() {
-    return gameSessionsService.getGameSessions();
-  }
-
-  @GetMapping("/heineken")
   public Page<GameSession> getHeinekenGameSessions(
       @RequestParam(required = false) Instant startDate,
       @RequestParam(required = false) Instant endDate,
       @RequestParam(required = false) String outletId,
+      @RequestParam(defaultValue = "HEINEKEN") BoothTypeEnum boothType,
       @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "10") int size) {
-    PageRequest pageable = PageRequest.of(page, size);
-    return gameSessionsService.getHeinekenGameSessionsWithFilters(startDate,
-        endDate, outletId, pageable);
-  }
+      @RequestParam(defaultValue = "25") int size) {
+    // Set default startDate to the beginning of today if null
+    if (startDate == null) {
+      startDate = LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC);
+    }
 
-  @GetMapping("/tiger")
-  public Page<GameSession> getTigerGameSessions(
-      @RequestParam(required = false) Instant startDate,
-      @RequestParam(required = false) Instant endDate,
-      @RequestParam(required = false) String outletId,
-      @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "10") int size) {
+    // Set default endDate to the end of today if null
+    if (endDate == null) {
+      endDate = LocalDate.now().atTime(23, 59, 59, 999999999).toInstant(ZoneOffset.UTC);
+    }
     PageRequest pageable = PageRequest.of(page, size);
-    return gameSessionsService.getTigerGameSessionsWithFilters(startDate,
+    return gameSessionsService.getGameSessionsWithFilters(
+        boothType, startDate,
         endDate, outletId, pageable);
   }
 }
