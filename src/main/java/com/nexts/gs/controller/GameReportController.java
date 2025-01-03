@@ -27,10 +27,11 @@ public class GameReportController {
 
   @GetMapping("/list")
   public Page<GameSession> getHeinekenGameSessions(
+      @RequestParam(required = true) String userId,
       @RequestParam(required = false) Instant startDate,
       @RequestParam(required = false) Instant endDate,
       @RequestParam(required = false) String outletId,
-      @RequestParam(defaultValue = "HEINEKEN") BoothTypeEnum boothType,
+      @RequestParam(defaultValue = "BOTH") BoothTypeEnum boothType,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "25") int size) {
     // Set default startDate to the beginning of today if null
@@ -44,7 +45,7 @@ public class GameReportController {
     }
     PageRequest pageable = PageRequest.of(page, size);
     return gameSessionsService.getGameSessionsWithFilters(
-        boothType, startDate,
+        userId, boothType, startDate,
         endDate, outletId, pageable);
   }
 }

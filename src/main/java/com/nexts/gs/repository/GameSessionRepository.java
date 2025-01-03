@@ -1,4 +1,4 @@
-package com.nexts.gs.repository.heineken;
+package com.nexts.gs.repository;
 
 import java.time.Instant;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.nexts.gs.model.GameSession;
 
 @Repository
-public interface HeinekenGameSessionsRepository
+public interface GameSessionRepository
     extends MongoRepository<GameSession, String> {
 
   @Query("{ 'outlet.id': ?0}")

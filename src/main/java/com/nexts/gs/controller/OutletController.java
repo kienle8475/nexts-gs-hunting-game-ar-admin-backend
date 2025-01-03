@@ -29,8 +29,9 @@ public class OutletController {
 
   @GetMapping("/list")
   public ResponseEntity<List<Outlet>> getAllOutlet(
+      @RequestParam(required = true) String userId,
       @RequestParam(defaultValue = "BOTH") BoothTypeEnum bootType) {
-    List<Outlet> outlets = outletService.getAllOutlets(bootType);
+    List<Outlet> outlets = outletService.getAllOutlets(userId, bootType);
     return ResponseEntity.ok(outlets);
   }
 

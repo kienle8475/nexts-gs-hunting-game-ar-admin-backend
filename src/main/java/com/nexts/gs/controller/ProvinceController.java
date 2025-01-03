@@ -25,15 +25,9 @@ public class ProvinceController {
   @Autowired
   private ProvinceService provinceService;
 
-  @GetMapping("/list")
-  public ResponseEntity<List<Province>> getAllProvince() {
-    List<Province> provinces = provinceService.getAllProvinces();
-    return ResponseEntity.ok(provinces);
-  }
-
   @GetMapping("/list-detail")
   public ResponseEntity<List<Province>> getAllProvinceDetail() {
-    List<Province> provinces = provinceService.getAllProvincesDetail();
+    List<Province> provinces = provinceService.getAllProvinces();
     return ResponseEntity.ok(provinces);
   }
 
