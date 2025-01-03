@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.nexts.gs.enums.BoothTypeEnum;
 import com.nexts.gs.model.GameSession;
+import com.nexts.gs.model.Outlet;
 import com.nexts.gs.model.Partition;
 import com.nexts.gs.model.User;
 import com.nexts.gs.repository.OutletRepository;
@@ -40,6 +41,22 @@ public class GameSessionsService {
 
   @Autowired
   private MongoTemplate mongoTemplate;
+
+  public List<ObjectId> getOutletIdsAsObjectIdByBoothType(BoothTypeEnum boothType) {
+    // Query repository for outlets matching the boothType
+    List<Outlet> outlets = outletRepository.findIdsByBoothType(boothType);
+    // Extract ObjectId
+    return outlets.stream()
+        .map(outlet -> new ObjectId(outlet.getId()))
+        .collect(Collectors.toList());
+  }
+
+  public List<ObjectId> getOutletIdsAsObjectIdByPartition(String partitionId) {
+    Optional<Partition> partition = partitionRepository.findById(partitionId);
+    return partition.get().getOutlets().stream()
+        .map(ObjectId::new)
+        .collect(Collectors.toList());
+  }
 
   public Page<GameSession> getGameSessionsWithFilters(String userId, BoothTypeEnum boothType, Instant startDate,
       Instant endDate, String outletId, Pageable pageable) {
@@ -66,11 +83,12 @@ public class GameSessionsService {
       if (outletId != null) {
         criteriaList.add(Criteria.where("outlet.id").is(outletId));
       } else if (user.get().getGroup() != null) {
-        Optional<Partition> partition = partitionRepository.findById(user.get().getGroup());
-        List<ObjectId> ids = partition.get().getOutlets().stream()
-            .map(ObjectId::new)
-            .collect(Collectors.toList());
-        criteriaList.add(Criteria.where("outlet").in(ids));
+        List<ObjectId> partitionIds = getOutletIdsAsObjectIdByPartition(user.get().getGroup());
+        if (boothType != BoothTypeEnum.BOTH) {
+          List<ObjectId> outletIds = getOutletIdsAsObjectIdByBoothType(boothType);
+          partitionIds.retainAll(outletIds);
+        }
+        criteriaList.add(Criteria.where("outlet").in(partitionIds));
 
       }
       // Combine criteria if any are present

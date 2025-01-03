@@ -1,7 +1,6 @@
 package com.nexts.gs.model;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
